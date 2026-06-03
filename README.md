@@ -1,2 +1,2 @@
-# symptom_progression_extraction
+# Symptom Progression Extraction from Psychiatric Clinical Notes Using LLMs
 Work in progress
