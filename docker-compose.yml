@@ -1,0 +1,44 @@
+x-light-service-template: &light-model-service
+  build:
+    context: .
+    dockerfile: Dockerfile.light
+  mem_limit: 30g
+  memswap_limit: 35g
+  restart: no
+  volumes:
+    - .:/app
+  working_dir: /app
+
+x-vllm-service-template: &vllm-model-service
+  build:
+    context: .
+    dockerfile: Dockerfile.devmodel
+  mem_limit: 60g
+  memswap_limit: 60g
+  restart: no
+  volumes:
+    - .:/app
+  working_dir: /app
+  deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: all
+            capabilities: [gpu]
+
+services:
+  symptom_prediction_service:
+    <<: *vllm-model-service
+    container_name: symptom_prediction_container
+    command: python -W "ignore" -u source/classification/symptom_prediction.py
+    volumes:
+      - .:/app
+
+  data_service:
+    <<: *light-model-service
+    container_name: dataset_container
+    volumes:
+      - .:/app
+    command: python -W "ignore" -u source/evaluation/error_analysis.py
+    

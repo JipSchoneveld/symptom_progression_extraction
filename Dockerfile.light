@@ -1,0 +1,11 @@
+# Start with a lightweight PyTorch base image
+FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+# Set the working directory inside the container
+WORKDIR /app
+
+COPY light_requirements.txt .
+RUN pip install --no-cache-dir -r light_requirements.txt
+
+ENV PYTHONPATH="/app"
+
+
